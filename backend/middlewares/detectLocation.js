@@ -27,7 +27,7 @@ export const detectLocation = async (req, res, next) => {
     const ip = getClientIp(req);
     console.log(`🌍 Detected client IP: ${ip}`);
 
-    const url = `${IPSTACK_API_URL}/${ip}?access_key=${IPSTACK_API_KEY}/json/`;
+    const url = `${IPSTACK_API_URL}/${ip}?access_key=${IPSTACK_API_KEY}`;
     console.log(`🌐 Fetching geo info from: ${url}`);
 
     const { data } = await axios.get(url);
