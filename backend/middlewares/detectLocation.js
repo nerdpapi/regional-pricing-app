@@ -1,6 +1,6 @@
 // middleware/detectLocation.js
 import axios from "axios";
-import { SUPPORTED_CURRENCIES, IP_GEO_API_URL } from "../config/currency.js";
+import { SUPPORTED_CURRENCIES, IPSTACK_API_URL, IPSTACK_API_KEY } from "../config/currency.js";
 
 const getClientIp = (req) => {
   const xff = req.headers["x-forwarded-for"];
@@ -27,7 +27,7 @@ export const detectLocation = async (req, res, next) => {
     const ip = getClientIp(req);
     console.log(`🌍 Detected client IP: ${ip}`);
 
-    const url = `${IP_GEO_API_URL}/${ip}/json/`;
+    const url = `${IPSTACK_API_URL}/${ip}?access_key=${IPSTACK_API_KEY}/json/`;
     console.log(`🌐 Fetching geo info from: ${url}`);
 
     const { data } = await axios.get(url);

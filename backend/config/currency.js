@@ -5,4 +5,5 @@ export const SUPPORTED_CURRENCIES = {
 };
 
 export const BASE_CURRENCY = process.env.BASE_CURRENCY || "USD";
-export const IP_GEO_API_URL = "https://ipapi.co";
+export const IPSTACK_API_URL = "9c988583638ed20e008862739a5575b7";
+export const IPSTACK_API_KEY ="http://api.ipstack.com";
