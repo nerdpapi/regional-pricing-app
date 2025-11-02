@@ -8,12 +8,12 @@ export default function SuccessPage() {
         Thank you! Your payment was successful. You’ll receive a confirmation shortly.
       </p>
 
-      <Link
-        href="/"
-        className="px-6 py-3 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition"
-      >
-        Back to Home
-      </Link>
+      <a
+  href="/"
+  className="px-6 py-3 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition"
+>
+  Back to Home
+</a>
     </main>
   );
 }
