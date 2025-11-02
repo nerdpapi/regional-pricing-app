@@ -1,8 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
 import { getStripe } from "../lib/getStripe";
-
-// shadcn/ui components
 import {
   Card,
   CardHeader,
@@ -21,7 +19,8 @@ import {
 } from "@/components/ui/select";
 
 export default function ProductCard({ product }) {
-  const [currency, setCurrency] = useState("USD");
+  // 🪙 Default to detected backend currency
+  const [currency, setCurrency] = useState(product.localizedPrice?.currency || "USD");
   const [loading, setLoading] = useState(false);
 
   const handleCheckout = async () => {
@@ -46,6 +45,24 @@ export default function ProductCard({ product }) {
     }
   };
 
+  const getCurrencySymbol = (cur) => {
+    switch (cur) {
+      case "INR":
+        return "₹";
+      case "GBP":
+        return "£";
+      default:
+        return "$";
+    }
+  };
+
+  // 🧮 Get price dynamically
+  const currentPrice = product.prices[currency] || product.prices["USD"];
+  const formattedPrice = new Intl.NumberFormat("en", {
+    style: "currency",
+    currency,
+  }).format(currentPrice);
+
   return (
     <Card className="flex flex-col border rounded-lg p-6 text-center shadow-md h-full bg-white">
       {/* === Product Image === */}
@@ -59,9 +76,7 @@ export default function ProductCard({ product }) {
 
       {/* === Product Info === */}
       <CardHeader className="p-0 mb-3">
-        <CardTitle className="text-xl font-semibold mb-2">
-          {product.name}
-        </CardTitle>
+        <CardTitle className="text-xl font-semibold mb-2">{product.name}</CardTitle>
         <CardDescription className="text-gray-600 mb-3 grow">
           {product.description}
         </CardDescription>
@@ -82,10 +97,7 @@ export default function ProductCard({ product }) {
       </CardContent>
 
       {/* === Price === */}
-      <p className="text-lg font-bold mb-4">
-        {currency === "INR" ? "₹" : currency === "GBP" ? "£" : "$"}
-        {product.prices[currency].toLocaleString()}
-      </p>
+      <p className="text-lg font-bold mb-4">{formattedPrice}</p>
 
       {/* === Buy Button === */}
       <CardFooter className="p-0 mt-auto">

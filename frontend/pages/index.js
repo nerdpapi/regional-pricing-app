@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 
 export default function HomePage() {
   const [products, setProducts] = useState([]);
-
+  const [currency, setCurrency] = useState("USD");
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -14,6 +14,8 @@ export default function HomePage() {
 
         if (data.success && Array.isArray(data.data)) {
           setProducts(data.data);
+          setCurrency(data.currency || "USD");
+          console.log(data.currency);
         } else {
           console.error("Invalid response format:", data);
         }
@@ -30,6 +32,7 @@ export default function HomePage() {
       <h1 className="text-4xl font-bold mb-6 text-center">Regional Pricing Store</h1>
       <p className="text-muted-foreground mb-10 text-center max-w-md">
         Choose your currency and pay securely via Stripe checkout
+        Prices shown in your local currency ({currency})
       </p>
 
       {products.length === 0 ? (
