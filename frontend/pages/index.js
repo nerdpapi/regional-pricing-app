@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 import ProductCard from "../components/ProductCard";
 import { Card } from "@/components/ui/card";
 
@@ -8,8 +9,9 @@ export default function HomePage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch("http://localhost:4000/api/products");
-        const data = await res.json();
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/products`);
+        const data = res.data;
+
         if (data.success && Array.isArray(data.data)) {
           setProducts(data.data);
         } else {

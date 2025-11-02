@@ -28,10 +28,10 @@ export default function ProductCard({ product }) {
     try {
       setLoading(true);
       const stripe = await getStripe();
-      const response = await axios.post("http://localhost:4000/api/checkout", {
-        productId: product.id,
-        currency,
-      });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/checkout`,
+        { productId: product.id, currency }
+      );
 
       if (response.data.url) {
         window.location.href = response.data.url;
