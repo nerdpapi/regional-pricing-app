@@ -87,8 +87,8 @@ export default function ProductCard({ product }) {
               <SelectValue placeholder="Select currency" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="INR">INR (₹)</SelectItem>
               <SelectItem value="USD">USD ($)</SelectItem>
+              <SelectItem value="INR">INR (₹)</SelectItem>
               <SelectItem value="GBP">GBP (£)</SelectItem>
             </SelectContent>
           </Select>
