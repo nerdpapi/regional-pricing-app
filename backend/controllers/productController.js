@@ -13,12 +13,12 @@ export const getProducts = [
       console.log("🌍 User country:", req.userCountry || "Unknown");
       console.log("💰 Currency from middleware:", req.userCurrency);
 
-      const userCurrency = req.userCurrency || "USD";
+      const userCurrency = req.userCurrency || "INR";
 
       const products = await Product.find({});
 
       const localizedProducts = products.map((p) => {
-        const price = p.prices[userCurrency] || p.prices["USD"];
+        const price = p.prices[userCurrency] || p.prices["INR"];
         return {
           id: p._id,
           name: p.name,
@@ -72,8 +72,8 @@ export const getProductById = async (req, res, next) => {
       });
     }
 
-    const userCurrency = req.userCurrency || "USD";
-    const price = product.prices[userCurrency] || product.prices["USD"];
+    const userCurrency = req.userCurrency || "INR";
+    const price = product.prices[userCurrency] || product.prices["INR"];
 
     const formattedProduct = {
       id: product._id,

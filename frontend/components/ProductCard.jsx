@@ -23,11 +23,11 @@ import {
 
 export default function ProductCard({ product }) {
   const dispatch = useDispatch();
-  const currency = useSelector((state) => state.currency.value); // ✅ global currency from Redux
+  const currency = useSelector((state) => state.currency.value); 
   const [loading, setLoading] = useState(false);
 
   const handleCurrencyChange = (val) => {
-    dispatch(setCurrency(val)); // ✅ updates global + localStorage
+    dispatch(setCurrency(val)); 
   };
 
   const handleCheckout = async () => {
