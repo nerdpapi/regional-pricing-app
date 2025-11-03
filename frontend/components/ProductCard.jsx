@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import Link from "next/link";
 import { getStripe } from "../lib/getStripe";
 import {
   Card,
@@ -28,7 +29,7 @@ export default function ProductCard({ product }) {
       const stripe = await getStripe();
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/checkout`,
-        { productId: product.id, currency }
+        { productId: product.id || product._id, currency }
       );
 
       if (response.data.url) {
@@ -55,7 +56,7 @@ export default function ProductCard({ product }) {
     }
   };
 
-  const currentPrice = product.prices[currency] || product.prices["USD"];
+  const currentPrice = product.prices?.[currency] || product.prices?.["USD"];
   const formattedPrice = new Intl.NumberFormat("en", {
     style: "currency",
     currency,
@@ -93,7 +94,18 @@ export default function ProductCard({ product }) {
 
       <p className="text-lg font-bold mb-4">{formattedPrice}</p>
 
-      <CardFooter className="p-0 mt-auto">
+      <CardFooter className="p-0 flex flex-col gap-3 mt-auto">
+        {/* ✅ View Details button */}
+        <Link href={`/products/${product._id || product.id}`} className="w-full">
+          <Button
+            variant="outline"
+            className="w-full rounded-full px-5 py-2 font-medium hover:bg-gray-100 transition"
+          >
+            View Details
+          </Button>
+        </Link>
+
+        {/* ✅ Buy Now button */}
         <Button
           onClick={handleCheckout}
           disabled={loading}

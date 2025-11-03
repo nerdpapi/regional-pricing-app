@@ -60,7 +60,51 @@ function formatPrice(value, currency) {
     return `${value} ${currency}`;
   }
 }
+export const getProductById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
 
+    console.log("🔎 Fetching product with ID:", id);
+
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    // Detect user's currency (optional if middleware is reused)
+    const userCurrency = req.userCurrency || "USD";
+    const price = product.prices[userCurrency] || product.prices["USD"];
+
+    const formattedProduct = {
+      id: product._id,
+      name: product.name,
+      description: product.description,
+      image: product.image,
+      prices: product.prices,
+      localizedPrice: {
+        currency: userCurrency,
+        value: price,
+        display: new Intl.NumberFormat("en", {
+          style: "currency",
+          currency: userCurrency,
+        }).format(price),
+      },
+    };
+
+    res.json({
+      success: true,
+      currency: userCurrency,
+      data: formattedProduct,
+    });
+  } catch (err) {
+    console.error("❌ Error fetching product:", err);
+    next(err);
+  }
+};
 // ✅ Add product controller (uses axios if external validations are added later)
 export const addProduct = async (req, res, next) => {
   try {
