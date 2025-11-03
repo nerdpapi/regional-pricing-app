@@ -21,17 +21,15 @@ import {
 
 export default function ProductCard({ product }) {
   const [currency, setCurrency] = useState(
-    product.localizedPrice?.currency || "USD"
+    product.localizedPrice?.currency || "INR"
   );
   const [loading, setLoading] = useState(false);
 
-  // Load saved currency
   useEffect(() => {
     const saved = localStorage.getItem("currency");
     if (saved) setCurrency(saved);
   }, []);
 
-  // Handle dropdown change
   const handleCurrencyChange = (val) => {
     setCurrency(val);
     localStorage.setItem("currency", val);
@@ -62,7 +60,7 @@ export default function ProductCard({ product }) {
   const getCurrencySymbol = (cur) =>
     cur === "INR" ? "₹" : cur === "GBP" ? "£" : "$";
 
-  const currentPrice = product.prices?.[currency] || product.prices?.["USD"];
+  const currentPrice = product.prices?.[currency] || product.prices?.["INR"];
   const formattedPrice = new Intl.NumberFormat("en", {
     style: "currency",
     currency,
@@ -70,7 +68,6 @@ export default function ProductCard({ product }) {
 
   return (
     <Card className="flex flex-col border rounded-lg p-6 text-center shadow-md bg-white h-full">
-      {/* Product Image */}
       <div className="w-full h-60 overflow-hidden rounded-md mb-4">
         <img
           src={product.image}
@@ -79,7 +76,6 @@ export default function ProductCard({ product }) {
         />
       </div>
 
-      {/* Header + Content */}
       <div className="flex flex-col grow">
         <CardHeader className="p-0 mb-3">
           <CardTitle className="text-xl font-semibold mb-2 line-clamp-1">
@@ -96,8 +92,8 @@ export default function ProductCard({ product }) {
               <SelectValue placeholder="Select currency" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="USD">USD ($)</SelectItem>
               <SelectItem value="INR">INR (₹)</SelectItem>
+              <SelectItem value="USD">USD ($)</SelectItem>
               <SelectItem value="GBP">GBP (£)</SelectItem>
             </SelectContent>
           </Select>
@@ -106,7 +102,6 @@ export default function ProductCard({ product }) {
         <p className="text-lg font-bold mb-4">{formattedPrice}</p>
       </div>
 
-      {/* Footer stays pinned at bottom */}
       <CardFooter className="p-0 flex flex-col gap-3 mt-auto">
         <Link
           href={`/products/${product._id || product.id}?currency=${currency}`}

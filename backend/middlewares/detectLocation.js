@@ -1,4 +1,4 @@
-// middleware/detectLocation.js
+
 import axios from "axios";
 import { SUPPORTED_CURRENCIES, IPSTACK_API_URL, IPSTACK_API_KEY } from "../config/currency.js";
 
@@ -9,21 +9,19 @@ const getClientIp = (req) => {
 };
 
 const currencyFromCountry = (countryCode) => {
-  if (!countryCode) return "USD";
+  if (!countryCode) return "INR";
   const upper = countryCode.toUpperCase();
-  return SUPPORTED_CURRENCIES[upper] || "USD";
+  return SUPPORTED_CURRENCIES[upper] || "INR";
 };
 
 export const detectLocation = async (req, res, next) => {
   try {
-    // 🔹 If currency is provided manually via query
     if (req.query.currency) {
       req.userCurrency = req.query.currency.toUpperCase();
       console.log(`💰 Currency from query: ${req.userCurrency}`);
       return next();
     }
 
-    // 🔹 Detect client IP
     const ip = getClientIp(req);
     console.log(`🌍 Detected client IP: ${ip}`);
 
@@ -44,7 +42,7 @@ export const detectLocation = async (req, res, next) => {
     next();
   } catch (err) {
     console.warn("⚠️ IP detection failed:", err.message);
-    req.userCurrency = "USD"; // fallback
+    req.userCurrency = "INR";
     next();
   }
 };

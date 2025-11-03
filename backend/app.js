@@ -16,23 +16,18 @@ import connectDB from "./config/db.js";
 
 const app = express();
 
-// ✅ Connect to MongoDB
 connectDB();
 
-// ✅ Middlewares
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
-// ✅ Routes
 app.use("/api/products", productRoutes);
 app.use("/api/checkout", checkoutRoutes);
-// ✅ Root route
 app.get("/", (req, res) => {
   res.send("🌍 API is running...");
 });
 
-// ✅ Global error handler
 app.use(errorHandler);
 
 export default app;

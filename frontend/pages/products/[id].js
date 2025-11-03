@@ -3,11 +3,12 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
+import { ArrowLeft } from "lucide-react";
 
 export default function ProductPage({ product }) {
   const router = useRouter();
   const { currency: queryCurrency } = router.query;
-  const [currency, setCurrency] = useState(queryCurrency || "USD");
+  const [currency, setCurrency] = useState(queryCurrency || "INR");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -41,7 +42,7 @@ export default function ProductPage({ product }) {
     }
   };
   const priceValue = product.prices?.[currency] ?? "N/A";
-  const currencySymbols = { USD: "$", INR: "₹", GBP: "£" };
+  const currencySymbols = { INR: "₹", USD: "$", GBP: "£" };
   const symbol = currencySymbols[currency] || "";
 
   return (
@@ -51,7 +52,7 @@ export default function ProductPage({ product }) {
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-300 scale-100 hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
           />
         </div>
 
@@ -100,11 +101,12 @@ export default function ProductPage({ product }) {
             </Button>
 
             <Link
-              href={`/?currency=${currency}`}
-              className="flex flex-row items-center justify-center w-50 rounded-full px-5 py-1 border-gray-300 text-gray-700 hover:bg-gray-100 transition cursor-pointer"
-            >
-              ← Back to Store
-            </Link>
+      href={`/?currency=${currency}`}
+      className="flex flex-row items-center gap-2 justify-center w-fit rounded-full px-5 py-2 border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+    >
+      <ArrowLeft className="w-4 h-4" />
+      <span>Back to Store</span>
+    </Link>
           </div>
         </div>
       </div>

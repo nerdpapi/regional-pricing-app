@@ -7,10 +7,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 router.post("/", createCheckoutSession);
 
-// ✅ Test if Stripe key works
 router.get("/test", async (req, res) => {
   try {
-    const balance = await stripe.balance.retrieve(); // test call
+    const balance = await stripe.balance.retrieve();
     res.json({ success: true, stripeConnected: true, balance });
   } catch (err) {
     console.error("❌ Stripe Test Failed:", err.message);

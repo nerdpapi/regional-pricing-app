@@ -8,15 +8,13 @@ const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 
 export const createCheckoutSession = async (req, res) => {
   try {
-    const { productId, currency = "USD" } = req.body;
+    const { productId, currency = "INR" } = req.body;
 
-    // ✅ Fetch product from DB
     const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    // ✅ Use Axios to call Stripe REST API directly
     const stripeRes = await axios.post(
       "https://api.stripe.com/v1/checkout/sessions",
       new URLSearchParams({
@@ -41,7 +39,6 @@ export const createCheckoutSession = async (req, res) => {
       }
     );
 
-    // ✅ Return Stripe-hosted Checkout URL
     res.json({ url: stripeRes.data.url });
   } catch (err) {
     console.error("❌ Stripe API Error:", err.response?.data || err.message);

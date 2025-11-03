@@ -18,7 +18,6 @@ export default function HomePage({ products, currency }) {
   );
 }
 
-// ✅ SSR to pre-render product list
 export async function getServerSideProps() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
@@ -31,7 +30,7 @@ export async function getServerSideProps() {
     return {
       props: {
         products: data.data,
-        currency: data.currency || "USD",
+        currency: data.currency || "INR",
       },
     };
   } catch (error) {

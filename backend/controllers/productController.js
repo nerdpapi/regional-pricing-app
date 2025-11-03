@@ -6,20 +6,17 @@ import { detectLocation } from "../middlewares/detectLocation.js";
 dotenv.config();
 
 export const getProducts = [
-  detectLocation, // 👈 Middleware executes before controller
+  detectLocation,
   async (req, res, next) => {
     try {
       console.log("➡️ Entered getProducts()");
       console.log("🌍 User country:", req.userCountry || "Unknown");
       console.log("💰 Currency from middleware:", req.userCurrency);
 
-      // ✅ Step 1: Determine user currency (from middleware or fallback)
       const userCurrency = req.userCurrency || "USD";
 
-      // ✅ Step 2: Fetch products from MongoDB
       const products = await Product.find({});
 
-      // ✅ Step 3: Map products to localized prices
       const localizedProducts = products.map((p) => {
         const price = p.prices[userCurrency] || p.prices["USD"];
         return {
@@ -37,7 +34,6 @@ export const getProducts = [
         };
       });
 
-      // ✅ Step 4: Respond to client
       res.json({
         success: true,
         currency: userCurrency,
@@ -76,7 +72,6 @@ export const getProductById = async (req, res, next) => {
       });
     }
 
-    // Detect user's currency (optional if middleware is reused)
     const userCurrency = req.userCurrency || "USD";
     const price = product.prices[userCurrency] || product.prices["USD"];
 
@@ -107,15 +102,9 @@ export const getProductById = async (req, res, next) => {
     next(err);
   }
 };
-// ✅ Add product controller (uses axios if external validations are added later)
 export const addProduct = async (req, res, next) => {
   try {
     const { name, description, image, details, prices } = req.body;
-
-    // (Optional future use)
-    // Example of axios usage: validate product image URL
-    // await axios.head(image);
-
     const newProduct = await Product.create({ name, description, image, details, prices });
     res.status(201).json({ success: true, data: newProduct });
   } catch (err) {
