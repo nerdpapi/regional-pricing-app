@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import Link from "next/link";
 import { getStripe } from "../lib/getStripe";
@@ -20,8 +20,22 @@ import {
 } from "@/components/ui/select";
 
 export default function ProductCard({ product }) {
-  const [currency, setCurrency] = useState(product.localizedPrice?.currency || "USD");
+  const [currency, setCurrency] = useState(
+    product.localizedPrice?.currency || "USD"
+  );
   const [loading, setLoading] = useState(false);
+
+  // Load saved currency
+  useEffect(() => {
+    const saved = localStorage.getItem("currency");
+    if (saved) setCurrency(saved);
+  }, []);
+
+  // Handle dropdown change
+  const handleCurrencyChange = (val) => {
+    setCurrency(val);
+    localStorage.setItem("currency", val);
+  };
 
   const handleCheckout = async () => {
     try {
@@ -45,16 +59,8 @@ export default function ProductCard({ product }) {
     }
   };
 
-  const getCurrencySymbol = (cur) => {
-    switch (cur) {
-      case "INR":
-        return "₹";
-      case "GBP":
-        return "£";
-      default:
-        return "$";
-    }
-  };
+  const getCurrencySymbol = (cur) =>
+    cur === "INR" ? "₹" : cur === "GBP" ? "£" : "$";
 
   const currentPrice = product.prices?.[currency] || product.prices?.["USD"];
   const formattedPrice = new Intl.NumberFormat("en", {
@@ -63,40 +69,49 @@ export default function ProductCard({ product }) {
   }).format(currentPrice);
 
   return (
-    <Card className="flex flex-col border rounded-lg p-6 text-center shadow-md h-full bg-white">
-      <div className="w-full h-60 xl:h-110 overflow-hidden rounded-md mb-4">
+    <Card className="flex flex-col border rounded-lg p-6 text-center shadow-md bg-white h-full">
+      {/* Product Image */}
+      <div className="w-full h-60 overflow-hidden rounded-md mb-4">
         <img
           src={product.image}
           alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+          className="w-full h-full object-contain transition-transform duration-300 scale-120 hover:scale-105"
         />
       </div>
 
-      <CardHeader className="p-0 mb-3">
-        <CardTitle className="text-xl font-semibold mb-2">{product.name}</CardTitle>
-        <CardDescription className="text-gray-600 mb-3 grow">
-          {product.description}
-        </CardDescription>
-      </CardHeader>
+      {/* Header + Content */}
+      <div className="flex flex-col grow">
+        <CardHeader className="p-0 mb-3">
+          <CardTitle className="text-xl font-semibold mb-2 line-clamp-1">
+            {product.name}
+          </CardTitle>
+          <CardDescription className="text-gray-600 mb-3 line-clamp-2 min-h-[48px]">
+            {product.description}
+          </CardDescription>
+        </CardHeader>
 
-      <CardContent className="p-0 mb-4">
-        <Select value={currency} onValueChange={(val) => setCurrency(val)}>
-          <SelectTrigger className="border rounded-md w-full">
-            <SelectValue placeholder="Select currency" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="USD">USD ($)</SelectItem>
-            <SelectItem value="INR">INR (₹)</SelectItem>
-            <SelectItem value="GBP">GBP (£)</SelectItem>
-          </SelectContent>
-        </Select>
-      </CardContent>
+        <CardContent className="p-0 mb-4">
+          <Select value={currency} onValueChange={handleCurrencyChange}>
+            <SelectTrigger className="border rounded-md w-full">
+              <SelectValue placeholder="Select currency" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="USD">USD ($)</SelectItem>
+              <SelectItem value="INR">INR (₹)</SelectItem>
+              <SelectItem value="GBP">GBP (£)</SelectItem>
+            </SelectContent>
+          </Select>
+        </CardContent>
 
-      <p className="text-lg font-bold mb-4">{formattedPrice}</p>
+        <p className="text-lg font-bold mb-4">{formattedPrice}</p>
+      </div>
 
+      {/* Footer stays pinned at bottom */}
       <CardFooter className="p-0 flex flex-col gap-3 mt-auto">
-        {/* ✅ View Details button */}
-        <Link href={`/products/${product._id || product.id}`} className="w-full">
+        <Link
+          href={`/products/${product._id || product.id}?currency=${currency}`}
+          className="w-full"
+        >
           <Button
             variant="outline"
             className="w-full rounded-full px-5 py-2 font-medium hover:bg-gray-100 transition"
@@ -105,7 +120,6 @@ export default function ProductCard({ product }) {
           </Button>
         </Link>
 
-        {/* ✅ Buy Now button */}
         <Button
           onClick={handleCheckout}
           disabled={loading}

@@ -1,51 +1,41 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
 import ProductCard from "../components/ProductCard";
-import { Card } from "@/components/ui/card";
 
-export default function HomePage() {
-  const [products, setProducts] = useState([]);
-  const [currency, setCurrency] = useState("USD");
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/products`);
-        const data = res.data;
-
-        if (data.success && Array.isArray(data.data)) {
-          setProducts(data.data);
-          setCurrency(data.currency || "USD");
-          console.log(data.currency);
-        } else {
-          console.error("Invalid response format:", data);
-        }
-      } catch (err) {
-        console.error("Error fetching products:", err);
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
+export default function HomePage({ products, currency }) {
   return (
     <main className="min-h-screen bg-background text-foreground flex flex-col items-center p-8 transition-colors duration-300">
       <h1 className="text-4xl font-bold mb-6 text-center">Regional Pricing Store</h1>
       <p className="text-muted-foreground mb-10 text-center max-w-md">
-        Choose your currency and pay securely via Stripe checkout
+        Choose your currency and pay securely via Stripe checkout.
         Prices shown in your local currency ({currency})
       </p>
 
-      {products.length === 0 ? (
-        <div>
-          Loading products...
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
-          {products.map((product) => (
-            <ProductCard key={product.id || product._id} product={product} />
-          ))}
-        </div>
-      )}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
+        {products.map((product) => (
+          <ProductCard key={product.id || product._id} product={product} />
+        ))}
+      </div>
     </main>
   );
+}
+
+// ✅ SSR to pre-render product list
+export async function getServerSideProps() {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
+    const data = await res.json();
+
+    if (!res.ok || !data?.success || !data?.data) {
+      return { notFound: true };
+    }
+
+    return {
+      props: {
+        products: data.data,
+        currency: data.currency || "USD",
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return { notFound: true };
+  }
 }
