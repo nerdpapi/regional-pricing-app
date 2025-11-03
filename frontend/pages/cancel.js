@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 export default function CancelPage() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center text-center p-8 bg-gray-50">
@@ -7,7 +8,8 @@ export default function CancelPage() {
         Your payment was not completed. You can try again anytime or go back to the home page.
       </p>
 
-      <Link href="/" prefetch={false} onClick={() => window.location.href = "/"}
+      <Link
+        href="/"
         className="px-6 py-3 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition"
       >
         Back to Home
