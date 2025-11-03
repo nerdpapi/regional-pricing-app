@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/select";
 
 export default function ProductCard({ product }) {
-  // 🪙 Default to detected backend currency
   const [currency, setCurrency] = useState(product.localizedPrice?.currency || "USD");
   const [loading, setLoading] = useState(false);
 
@@ -56,7 +55,6 @@ export default function ProductCard({ product }) {
     }
   };
 
-  // 🧮 Get price dynamically
   const currentPrice = product.prices[currency] || product.prices["USD"];
   const formattedPrice = new Intl.NumberFormat("en", {
     style: "currency",
@@ -65,7 +63,6 @@ export default function ProductCard({ product }) {
 
   return (
     <Card className="flex flex-col border rounded-lg p-6 text-center shadow-md h-full bg-white">
-      {/* === Product Image === */}
       <div className="w-full h-60 xl:h-110 overflow-hidden rounded-md mb-4">
         <img
           src={product.image}
@@ -74,7 +71,6 @@ export default function ProductCard({ product }) {
         />
       </div>
 
-      {/* === Product Info === */}
       <CardHeader className="p-0 mb-3">
         <CardTitle className="text-xl font-semibold mb-2">{product.name}</CardTitle>
         <CardDescription className="text-gray-600 mb-3 grow">
@@ -82,7 +78,6 @@ export default function ProductCard({ product }) {
         </CardDescription>
       </CardHeader>
 
-      {/* === Currency Selector === */}
       <CardContent className="p-0 mb-4">
         <Select value={currency} onValueChange={(val) => setCurrency(val)}>
           <SelectTrigger className="border rounded-md w-full">
@@ -96,10 +91,8 @@ export default function ProductCard({ product }) {
         </Select>
       </CardContent>
 
-      {/* === Price === */}
       <p className="text-lg font-bold mb-4">{formattedPrice}</p>
 
-      {/* === Buy Button === */}
       <CardFooter className="p-0 mt-auto">
         <Button
           onClick={handleCheckout}
