@@ -27,6 +27,7 @@ export const getProducts = [
           name: p.name,
           description: p.description,
           image: p.image,
+          details: p.details,
           prices: p.prices,
           localizedPrice: {
             currency: userCurrency,
@@ -84,6 +85,7 @@ export const getProductById = async (req, res, next) => {
       name: product.name,
       description: product.description,
       image: product.image,
+      details: product.details,
       prices: product.prices,
       localizedPrice: {
         currency: userCurrency,
@@ -108,13 +110,13 @@ export const getProductById = async (req, res, next) => {
 // ✅ Add product controller (uses axios if external validations are added later)
 export const addProduct = async (req, res, next) => {
   try {
-    const { name, description, image, prices } = req.body;
+    const { name, description, image, details, prices } = req.body;
 
     // (Optional future use)
     // Example of axios usage: validate product image URL
     // await axios.head(image);
 
-    const newProduct = await Product.create({ name, description, image, prices });
+    const newProduct = await Product.create({ name, description, image, details, prices });
     res.status(201).json({ success: true, data: newProduct });
   } catch (err) {
     next(err);

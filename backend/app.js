@@ -3,9 +3,7 @@ dotenv.config();
 console.log("🔍 Environment variables loaded:", {
   PORT: process.env.PORT,
   MONGO_URI: process.env.MONGO_URI,
-  NODE_ENV: process.env.NODE_ENV,
   BASE_CURRENCY: process.env.BASE_CURRENCY,
-  IP_GEO_API_URL: process.env.IP_GEO_API_URL,
 });
 
 import express from "express";
