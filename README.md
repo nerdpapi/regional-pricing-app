@@ -47,6 +47,8 @@ Create a .env file in the backend folder with:<br>
 PORT=5000<br>
 MONGO_URI=your_mongodb_atlas_connection<br>
 STRIPE_SECRET_KEY=your_stripe_secret_key<br>
+IPSTACK_API_URL= http://api.ipstack.com
+IPSTACK_API_KEY=your_ipstack_api_key
 Run the backend locally:<br>
 node server.js<br>
 When deployed to Render, it will automatically start using your defined start command.<br><br>
