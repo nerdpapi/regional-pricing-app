@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrency } from "@/store/currencySlice";
 import axios from "axios";
 import Link from "next/link";
 import { getStripe } from "../lib/getStripe";
@@ -20,19 +22,12 @@ import {
 } from "@/components/ui/select";
 
 export default function ProductCard({ product }) {
-  const [currency, setCurrency] = useState(
-    product.localizedPrice?.currency || "INR"
-  );
+  const dispatch = useDispatch();
+  const currency = useSelector((state) => state.currency.value); // ✅ global currency from Redux
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const saved = localStorage.getItem("currency");
-    if (saved) setCurrency(saved);
-  }, []);
-
   const handleCurrencyChange = (val) => {
-    setCurrency(val);
-    localStorage.setItem("currency", val);
+    dispatch(setCurrency(val)); // ✅ updates global + localStorage
   };
 
   const handleCheckout = async () => {

@@ -1,11 +1,22 @@
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import ProductCard from "../components/ProductCard";
-
+import { loadCurrency } from "@/store/currencySlice"; 
 export default function HomePage({ products, currency }) {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (currency) {
+      dispatch(loadCurrency(currency));
+    }
+  }, [currency, dispatch]);
+
   return (
     <main className="min-h-screen bg-background text-foreground flex flex-col items-center p-8 transition-colors duration-300">
       <h1 className="text-4xl font-bold mb-6 text-center">Regional Pricing Store</h1>
       <p className="text-muted-foreground mb-10 text-center max-w-md">
         Choose your currency and pay securely via Stripe checkout.
+        <br />
         Prices shown in your local currency ({currency})
       </p>
 
@@ -18,10 +29,12 @@ export default function HomePage({ products, currency }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
     const data = await res.json();
+
+    console.log("🪙 Currency from backend:", data.currency);
 
     if (!res.ok || !data?.success || !data?.data) {
       return { notFound: true };
