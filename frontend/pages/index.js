@@ -8,7 +8,7 @@ export default function HomePage({ products, currency }) {
   const storedCurrency = useSelector((state) => state.currency.value);
   console.log("storedCurrency", storedCurrency);
   useEffect(() => {
-    if (!storedCurrency && currency) {
+    if (currency && storedCurrency !== currency) {
       dispatch(loadCurrency(currency));
     }
   }, [currency, storedCurrency, dispatch]);
