@@ -22,7 +22,7 @@ export default function ProductPage({ product }) {
       setLoading(true);
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/checkout`,
-        { productId: product.id || product._id, currency } // ✅ Uses Redux currency
+        { productId: product.id || product._id, currency }
       );
       if (response.data.url) {
         window.location.href = response.data.url;
