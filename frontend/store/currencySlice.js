@@ -11,14 +11,11 @@ const currencySlice = createSlice({
     setCurrency: (state, action) => {
       state.value = action.payload;
     },
-    loadCurrency: (state, action) => {
-      state.value = action.payload || null;
-    },
     resetCurrency: (state) => {
       state.value = null;
     },
   },
 });
 
-export const { setCurrency, loadCurrency, resetCurrency } = currencySlice.actions;
+export const { setCurrency, resetCurrency } = currencySlice.actions;
 export default currencySlice.reducer;
