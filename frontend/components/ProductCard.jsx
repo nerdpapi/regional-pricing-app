@@ -55,11 +55,14 @@ export default function ProductCard({ product }) {
   const getCurrencySymbol = (cur) =>
     cur === "INR" ? "₹" : cur === "GBP" ? "£" : "$";
 
-  const currentPrice = product.prices?.[currency] || product.prices?.["INR"];
-  const formattedPrice = new Intl.NumberFormat("en", {
-    style: "currency",
-    currency,
-  }).format(currentPrice);
+  const safeCurrency = currency || "INR"; 
+
+const currentPrice = product.prices?.[safeCurrency] || product.prices?.["INR"];
+
+const formattedPrice = new Intl.NumberFormat("en", {
+  style: "currency",
+  currency: safeCurrency,
+}).format(currentPrice);
 
   return (
     <Card className="flex flex-col border rounded-lg p-6 text-center shadow-md bg-white h-full">
