@@ -25,7 +25,7 @@ export default function ProductCard({ product }) {
   const dispatch = useDispatch();
   const currency = useSelector((state) => state.currency.value); 
   const [loading, setLoading] = useState(false);
-
+  const safeCurrency = currency || "INR"; 
   const handleCurrencyChange = (val) => {
     dispatch(setCurrency(val)); 
   };
@@ -36,7 +36,7 @@ export default function ProductCard({ product }) {
       const stripe = await getStripe();
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/checkout`,
-        { productId: product.id || product._id, currency }
+        { productId: product.id || product._id,  currency: safeCurrency }
       );
 
       if (response.data.url) {
@@ -54,8 +54,6 @@ export default function ProductCard({ product }) {
 
   const getCurrencySymbol = (cur) =>
     cur === "INR" ? "₹" : cur === "GBP" ? "£" : "$";
-
-  const safeCurrency = currency || "INR"; 
 
 const currentPrice = product.prices?.[safeCurrency] || product.prices?.["INR"];
 
@@ -85,7 +83,7 @@ const formattedPrice = new Intl.NumberFormat("en", {
         </CardHeader>
 
         <CardContent className="p-0 mb-4">
-          <Select value={currency} onValueChange={handleCurrencyChange}>
+          <Select value={safeCurrency} onValueChange={handleCurrencyChange}>
             <SelectTrigger className="border rounded-md w-full">
               <SelectValue placeholder="Select currency" />
             </SelectTrigger>
