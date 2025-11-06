@@ -1,17 +1,17 @@
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loadCurrency } from "@/store/currencySlice";
 import ProductCard from "../components/ProductCard";
 
 export default function HomePage({ products, currency }) {
   const dispatch = useDispatch();
-
-  // ✅ Load currency into Redux when page loads
+  const storedCurrency = useSelector((state) => state.currency.value);
+  console.log("storedCurrency", storedCurrency);
   useEffect(() => {
-    if (currency) {
+    if (!storedCurrency && currency) {
       dispatch(loadCurrency(currency));
     }
-  }, [currency, dispatch]);
+  }, [currency, storedCurrency, dispatch]);
 
   return (
     <main className="min-h-screen bg-background text-foreground flex flex-col items-center p-8 transition-colors duration-300">
@@ -20,7 +20,7 @@ export default function HomePage({ products, currency }) {
       <p className="text-muted-foreground mb-10 text-center max-w-md">
         Choose your currency and pay securely via Stripe checkout.
         <br />
-        Prices shown in your local currency.
+        Prices shown in <b className="text-primary">{storedCurrency}</b>.
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
