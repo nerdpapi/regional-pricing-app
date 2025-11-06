@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loadCurrency } from "@/store/currencySlice";
+import { setCurrency } from "@/store/currencySlice";
 import ProductCard from "../components/ProductCard";
 
 export default function HomePage({ products, currency }) {
@@ -8,20 +8,8 @@ export default function HomePage({ products, currency }) {
   const storedCurrency = useSelector((state) => state.currency.value);
   console.log("storedCurrency", storedCurrency);
   useEffect(() => {
-    if (currency && storedCurrency !== currency) {
-      dispatch(loadCurrency(currency));
-    }
-  }, [currency, storedCurrency, dispatch]);
-
-  useEffect(() => {
-    fetch("https://api.ipify.org?format=json")
-      .then(res => res.json())
-      .then(data => {
-        localStorage.setItem("real_ip", data.ip);
-        console.log("📌 Real IP detected in browser:", data.ip);
-      });
+      dispatch(setCurrency(currency));
   }, []);
-
   return (
     <main className="min-h-screen bg-background text-foreground flex flex-col items-center p-8 transition-colors duration-300">
       <h1 className="text-4xl font-bold mb-6 text-center">Regional Pricing Store</h1>
