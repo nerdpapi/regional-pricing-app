@@ -13,6 +13,15 @@ export default function HomePage({ products, currency }) {
     }
   }, [currency, storedCurrency, dispatch]);
 
+  useEffect(() => {
+    fetch("https://api.ipify.org?format=json")
+      .then(res => res.json())
+      .then(data => {
+        localStorage.setItem("real_ip", data.ip);
+        console.log("📌 Real IP detected in browser:", data.ip);
+      });
+  }, []);
+
   return (
     <main className="min-h-screen bg-background text-foreground flex flex-col items-center p-8 transition-colors duration-300">
       <h1 className="text-4xl font-bold mb-6 text-center">Regional Pricing Store</h1>
@@ -32,9 +41,13 @@ export default function HomePage({ products, currency }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ req }) {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
+    const clientIp = req.headers["x-forwarded-for"]?.split(",")[0].trim() || null;
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/products?ip=${clientIp}`
+  );
     const data = await res.json();
 
     if (!res.ok || !data?.success || !data?.data) {
