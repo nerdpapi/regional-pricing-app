@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 export default function ProductPage({ product }) {
   const currency = useSelector((state) => state.currency.value);
   const [loading, setLoading] = useState(false);
-
+  const safeCurrency = currency || "INR";
   if (!product) {
     return (
       <div className="flex items-center justify-center min-h-screen text-gray-600">
@@ -22,7 +22,7 @@ export default function ProductPage({ product }) {
       setLoading(true);
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/checkout`,
-        { productId: product.id || product._id, currency }
+        { productId: product.id || product._id, currency: safeCurrency }
       );
       if (response.data.url) {
         window.location.href = response.data.url;
