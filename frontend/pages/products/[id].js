@@ -1,19 +1,13 @@
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/router";
 import { ArrowLeft } from "lucide-react";
+import { useSelector } from "react-redux";
 
 export default function ProductPage({ product }) {
-  const router = useRouter();
-  const { currency: queryCurrency } = router.query;
-  const [currency, setCurrency] = useState(queryCurrency || "INR");
+  const currency = useSelector((state) => state.currency.value);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (queryCurrency) setCurrency(queryCurrency);
-  }, [queryCurrency]);
 
   if (!product) {
     return (
@@ -28,7 +22,7 @@ export default function ProductPage({ product }) {
       setLoading(true);
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/checkout`,
-        { productId: product.id || product._id, currency }
+        { productId: product.id || product._id, currency } // ✅ Uses Redux currency
       );
       if (response.data.url) {
         window.location.href = response.data.url;
@@ -41,6 +35,7 @@ export default function ProductPage({ product }) {
       setLoading(false);
     }
   };
+
   const priceValue = product.prices?.[currency] ?? "N/A";
   const currencySymbols = { INR: "₹", USD: "$", GBP: "£" };
   const symbol = currencySymbols[currency] || "";
@@ -62,19 +57,17 @@ export default function ProductPage({ product }) {
               {product.name}
             </h1>
 
-            {console.log("Product details from backend:", product.details)}
-
-{product.details && product.details.length > 0 ? (
-  <ul className="list-disc list-inside space-y-1 text-gray-600 mb-6 text-base leading-relaxed">
-    {product.details.map((item, idx) => (
-      <li key={idx}>{item}</li>
-    ))}
-  </ul>
-) : (
-  <p className="text-gray-600 mb-6 text-base leading-relaxed">
-    No details available.
-  </p>
-)}
+            {product.details && product.details.length > 0 ? (
+              <ul className="list-disc list-inside space-y-1 text-gray-600 mb-6 text-base leading-relaxed">
+                {product.details.map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-gray-600 mb-6 text-base leading-relaxed">
+                No details available.
+              </p>
+            )}
 
             {priceValue !== "N/A" ? (
               <p className="text-2xl font-bold text-blue-600 mb-6">
@@ -101,19 +94,18 @@ export default function ProductPage({ product }) {
             </Button>
 
             <Link
-      href={`/?currency=${currency}`}
-      className="flex flex-row items-center gap-2 justify-center w-fit rounded-full px-5 py-2 border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
-    >
-      <ArrowLeft className="w-4 h-4" />
-      <span>Back to Store</span>
-    </Link>
+              href="/"
+              className="flex flex-row items-center gap-2 justify-center w-fit rounded-full px-5 py-2 border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Store</span>
+            </Link>
           </div>
         </div>
       </div>
     </main>
   );
 }
-
 
 export async function getServerSideProps(context) {
   const { id } = context.params;
