@@ -99,7 +99,7 @@ export default function ProductCard({ product }) {
 
       <CardFooter className="p-0 flex flex-col gap-3 mt-auto">
         <Link
-          href={`/products/${product._id || product.id}?currency=${currency}`}
+          href={`/products/${product._id || product.id}`}
           className="w-full"
         >
           <Button
