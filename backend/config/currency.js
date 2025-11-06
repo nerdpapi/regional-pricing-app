@@ -6,4 +6,4 @@ export const SUPPORTED_CURRENCIES = {
 
 export const BASE_CURRENCY = "INR";
 export const IPSTACK_API_URL = "http://api.ipstack.com";
-export const IPSTACK_API_KEY ="8b27593762169294cea28acb04c4bf57";
+export const IPSTACK_API_KEY = process.env.IPSTACK_API_KEY;
