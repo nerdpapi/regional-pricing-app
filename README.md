@@ -107,10 +107,16 @@ GET https://regional-pricing-app-backend.onrender.com/api/products<br><br>
 Fetch single product by ID:<br>
 GET https://regional-pricing-app-backend.onrender.com/api/products/:id<br><br>
 
-🧑‍💻 Author<br>
-Kunal Kumar<br>
-📧 kunalkmr71@gmail.com<br><br>
+## To simulate different regions, use a VPN and refresh the site.<br><br>
 
+Region You Want to Simulate	Set VPN To	Currency Displayed<br>
+United States	USA	USD ($)<br>
+India	India	INR (₹)<br>
+United Kingdom	UK	GBP (£)<br>
+
+## 🧑‍💻 Author<br>
+## Kunal Kumar<br>
+## 📧 kunalkmr71@gmail.com<br><br>
 
 ## 🧠 Notes / Highlights<br>
 The project showcases full-stack integration with region-based logic.<br>
