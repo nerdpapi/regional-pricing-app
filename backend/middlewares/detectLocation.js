@@ -1,13 +1,6 @@
 
 import axios from "axios";
 import { SUPPORTED_CURRENCIES, IPSTACK_API_URL, IPSTACK_API_KEY } from "../config/currency.js";
-
-const getClientIp = (req) => {
-  const xff = req.headers["x-forwarded-for"];
-  if (xff) return xff.split(",")[0].trim();
-  return req.socket.remoteAddress;
-};
-
 const currencyFromCountry = (countryCode) => {
   if (!countryCode) return "INR";
   const upper = countryCode.toUpperCase();
@@ -22,26 +15,28 @@ export const detectLocation = async (req, res, next) => {
       return next();
     }
 
-    const ip = getClientIp(req);
-    console.log(`🌍 Detected client IP: ${ip}`);
+    const ip = req.query.ip;
+    console.log("🌍 Real Client IP:", ip);
 
-    const url = `${IPSTACK_API_URL}/${ip}?access_key=${IPSTACK_API_KEY}`;
-    console.log(`🌐 Fetching geo info from: ${url}`);
+    if (!ip) {
+      req.userCurrency = "INR";
+      return next();
+    }
 
-    const { data } = await axios.get(url);
+    const { data } = await axios.get(
+      `${IPSTACK_API_URL}/${ip}?access_key=${IPSTACK_API_KEY}`
+    );
 
-    console.log("📦 Geo API response:", data);
+    console.log("📦 Geo API Response:", data);
 
-    const countryCode = data.country || data.country_code;
+    const countryCode = data.country_code;
     req.userCountry = countryCode;
     req.userCurrency = currencyFromCountry(countryCode);
 
-    console.log(`✅ User country: ${req.userCountry}`);
-    console.log(`💱 User currency: ${req.userCurrency}`);
-
+    console.log(`✅ ${countryCode} → ${req.userCurrency}`);
     next();
   } catch (err) {
-    console.warn("⚠️ IP detection failed:", err.message);
+    console.warn("⚠️ Geo lookup failed:", err.message);
     req.userCurrency = "INR";
     next();
   }
